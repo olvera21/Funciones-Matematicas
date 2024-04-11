@@ -1,0 +1,326 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tipo de Triángulo</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: url("https://images.unsplash.com/photo-1454117096348-e4abbeba002c?q=80&w=1000&uto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8fA%3D%3D") center/cover no-repeat fixed;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            font-size: 16px;
+        }
+
+        header {
+            background-color: #3498db;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 1.5em;
+        }
+
+        form {
+            max-width: 80%;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            margin-top: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #00ff2f;
+        }
+
+        #resultado {
+            font-weight: bold;
+            margin-top: 10px;
+            color: #fff;
+        }
+
+        #descripcionResultado {
+            color: #fff;
+            margin-top: 5px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        #trianguloVisual {
+            width: 0;
+            height: 0;
+            border-left: 50px solid transparent;
+            border-right: 50px solid transparent;
+            margin-top: 10px;
+        }
+
+        .imagenTriangulo {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        #imagenTrianguloContainer {
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #errorMensaje {
+            color: #ff0000;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        #footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+        }
+        #angulosResultado {
+    margin-top: 10px;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+}
+
+#angulosResultado strong {
+    display: block;
+    margin-top: 8px;
+    font-size: 18px;
+}
+
+#angulosResultado span {
+    font-size: 16px;
+    margin-right: 10px;
+}
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Determinar el Tipo de Triángulo</h1>
+</header>
+
+<form id="trianguloForm">
+    <label for="ladoA">Longitud del lado a:</label>
+    <input type="number" id="ladoA" required>
+    
+    <label for="ladoB">Longitud del lado b:</label>
+    <input type="number" id="ladoB" required>
+    
+    <label for="ladoC">Longitud del lado c:</label>
+    <input type="number" id="ladoC" required>
+
+   <center><button type="button" onclick="determinarTipoTriangulo()">Determinar Tipo</button></center>
+   <a href="index.html">
+   <center> <button type="button" onclick="mostrarAngulos()">Menu</button></center>
+    </a>
+</form>
+
+<p id="resultado"></p>
+<p id="descripcionResultado"></p>
+
+<div id="trianguloVisual"></div>
+
+<div id="imagenTrianguloContainer">
+    <img src="https://storage.googleapis.com/blesstest/public/media/60461/Titulos14.jpg" class="imagenTriangulo" alt="">
+    <p id="descripcionImagen"></p>
+</div>
+
+<p id="errorMensaje"></p>
+
+<script>
+    function determinarTipoTriangulo() {
+        // Obtener las longitudes de los lados
+        var ladoA = parseFloat(document.getElementById("ladoA").value);
+        var ladoB = parseFloat(document.getElementById("ladoB").value);
+        var ladoC = parseFloat(document.getElementById("ladoC").value);
+
+        // Validar que se hayan ingresado valores
+        if (isNaN(ladoA) || isNaN(ladoB) || isNaN(ladoC)) {
+            document.getElementById("errorMensaje").innerText = "Por favor, ingresa valores válidos para todos los lados.";
+            return;
+        }
+
+        // Verificar el tipo de triángulo y mostrar el resultado
+        var resultado = tipoDeTriangulo(ladoA, ladoB, ladoC);
+        document.getElementById("resultado").innerText = resultado;
+
+        // Mostrar descripción del resultado
+        mostrarDescripcionResultado(resultado);
+
+        // Mostrar visualización del triángulo
+        mostrarTriangulo(ladoA, ladoB, ladoC);
+
+        // Mostrar imagen dinámicamente y descripción
+        mostrarImagen(resultado);
+
+        // Limpiar el mensaje de error
+        document.getElementById("errorMensaje").innerText = "";
+    }
+
+    function tipoDeTriangulo(a, b, c) {
+        if (a === b && b === c) {
+            return "El triángulo es equilátero.";
+        } else if (a === b || a === c || b === c) {
+            return "El triángulo es isósceles.";
+        } else {
+            return "El triángulo es escaleno.";
+        }
+    }
+
+    function mostrarTriangulo(a, b, c) {
+        var trianguloVisual = document.getElementById("trianguloVisual");
+        trianguloVisual.style.borderBottom = "none";
+        trianguloVisual.style.borderLeft = (a / c) * 100 + "% solid transparent";
+        trianguloVisual.style.borderRight = (b / c) * 100 + "% solid transparent";
+        trianguloVisual.style.borderBottom = "100px solid black";
+    }
+
+    function mostrarImagen(tipoTriangulo) {
+        var imagenTrianguloContainer = document.getElementById("imagenTrianguloContainer");
+        
+        // Crear un nuevo elemento de imagen
+        var nuevaImagen = document.createElement("img");
+
+        // Asignar una ruta de imagen según el tipo de triángulo
+        switch (tipoTriangulo) {
+            case "El triángulo es equilátero.":
+                nuevaImagen.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Triangle.Equilateral.svg/250px-Triangle.Equilateral.svg.png";
+                document.getElementById("descripcionImagen").innerText = "Triángulo equilátero: Todos los lados son iguales.";
+                break;
+            case "El triángulo es isósceles.":
+                nuevaImagen.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Tri%C3%A1ngulo_acut%C3%A1ngulo_is%C3%B3sceles.svg/1024px-Tri%C3%A1ngulo_acut%C3%A1ngulo_is%C3%B3sceles.svg.png";
+                document.getElementById("descripcionImagen").innerText = "Triángulo isósceles: Dos lados son iguales.";
+                break;
+            case "El triángulo es escaleno.":
+                nuevaImagen.src = "https://us.123rf.com/450wm/morphart/morphart1910/morphart191079825/132962486-la-imagen-que-muestra-un-tri%C3%A1ngulo-escaleno-estos-tri%C3%A1ngulos-tienen-dos-lados-iguales-dibujo-de.jpg";
+                document.getElementById("descripcionImagen").innerText = "Triángulo escaleno: Todos los lados son diferentes.";
+                break;
+            default:
+                nuevaImagen.src = "ruta/a/tu/imagen_default.jpg";
+                document.getElementById("descripcionImagen").innerText = "";
+        }
+
+        nuevaImagen.alt = "Triángulo Visual";
+        nuevaImagen.className = "imagenTriangulo";
+
+        // Añadir la imagen y la descripción al contenedor
+        imagenTrianguloContainer.innerHTML = "";
+        imagenTrianguloContainer.appendChild(nuevaImagen);
+    }
+
+    function mostrarDescripcionResultado(resultado) {
+        var descripcionResultado = document.getElementById("descripcionResultado");
+
+        // Asignar una descripción según el tipo de triángulo
+        switch (resultado) {
+            case "El triángulo es equilátero.":
+                descripcionResultado.innerText = "En geometría, un triángulo equilátero es un polígono regular, es decir, tiene sus tres lados iguales.​ En la geometría euclídea tradicional, los triángulos equiláteros también son equiangulares, es decir, los tres ángulos internos son iguales. ";
+                break;
+            case "El triángulo es isósceles.":
+                descripcionResultado.innerText = "En geometría, un triángulo isósceles es un triángulo que tiene dos lados de igual longitud. Al ángulo formado por lados de igual longitud se le denomina ángulo en el vértice y al lado opuesto a él, lado base.​";
+                break;
+            case "El triángulo es escaleno.":
+                descripcionResultado.innerText = "Un triángulo escaleno es la forma más general de triángulo, de ahí que las consideraciones que sobre este tipo de triángulos se puedan hacer son las que sobre triángulos en general se pueden hacer.";
+                break;
+            default:
+                descripcionResultado.innerText = "";
+        }
+    }
+    function determinarTipoTriangulo() {
+        // Obtener las longitudes de los lados
+        var ladoA = parseFloat(document.getElementById("ladoA").value);
+        var ladoB = parseFloat(document.getElementById("ladoB").value);
+        var ladoC = parseFloat(document.getElementById("ladoC").value);
+
+        // Validar que se hayan ingresado valores
+        if (isNaN(ladoA) || isNaN(ladoB) || isNaN(ladoC)) {
+            document.getElementById("errorMensaje").innerText = "Por favor, ingresa valores válidos para todos los lados.";
+            return;
+        }
+
+        // Calcular los ángulos
+        var angulos = calcularAngulos(ladoA, ladoB, ladoC);
+
+        // Verificar el tipo de triángulo y mostrar el resultado
+        var resultado = tipoDeTriangulo(ladoA, ladoB, ladoC);
+        document.getElementById("resultado").innerText = resultado;
+
+        // Mostrar descripción del resultado
+        mostrarDescripcionResultado(resultado);
+
+        // Mostrar visualización del triángulo
+        mostrarTriangulo(ladoA, ladoB, ladoC);
+
+        // Mostrar imagen dinámicamente y descripción
+        mostrarImagen(resultado);
+
+        // Mostrar los ángulos
+        mostrarAngulos(angulos);
+
+        // Limpiar el mensaje de error
+        document.getElementById("errorMensaje").innerText = "";
+    }
+
+    function calcularAngulos(a, b, c) {
+        var anguloA = Math.acos((b * b + c * c - a * a) / (2 * b * c)) * (180 / Math.PI);
+        var anguloB = Math.acos((a * a + c * c - b * b) / (2 * a * c)) * (180 / Math.PI);
+        var anguloC = 180 - anguloA - anguloB;
+
+        return {
+            anguloA: anguloA.toFixed(2),
+            anguloB: anguloB.toFixed(2),
+            anguloC: anguloC.toFixed(2)
+        };
+    }
+
+    function mostrarAngulos(angulos) {
+        document.getElementById("descripcionResultado").innerHTML = `
+            <strong>Ángulo A:</strong> ${angulos.anguloA}° <br>
+            <strong>Ángulo B:</strong> ${angulos.anguloB}° <br>
+            <strong>Ángulo C:</strong> ${angulos.anguloC}°
+        `;
+    }
+</script>
+</script>
+
+<div id="footer">
+    <p>Creado por Eduardo Olvera Camacho</p>
+</div>
+
+</body>
+</html>
